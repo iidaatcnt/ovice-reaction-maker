@@ -31,6 +31,7 @@ export default function Home() {
   // const fps = 20; // Unused for now
   const [duration, setDuration] = useState(2); // seconds
   const [currentSize, setCurrentSize] = useState<SizePreset>(SIZE_PRESETS[0]); // Canvas size
+  const [fontSizeOffset, setFontSizeOffset] = useState(0); // Available range: -20 to +20 (approx)
   const [isGenerating, setIsGenerating] = useState(false);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -405,7 +406,28 @@ export default function Home() {
         <div className="flex-1 w-full bg-[#1a1a23] p-8 rounded-3xl border border-white/5 flex flex-col gap-6 shadow-xl">
 
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-gray-400 uppercase tracking-wide">Text</label>
+            <div className="flex justify-between items-center">
+              <label className="text-sm font-semibold text-gray-400 uppercase tracking-wide">Text</label>
+              <div className="flex items-center gap-2 bg-black/30 rounded-lg p-1">
+                <button
+                  onClick={() => setFontSizeOffset(prev => prev - 2)}
+                  className="w-8 h-8 flex items-center justify-center bg-white/5 hover:bg-white/10 rounded text-gray-400 hover:text-white transition-colors"
+                  title="Smaller text"
+                >
+                  -
+                </button>
+                <span className="text-xs font-mono w-12 text-center text-gray-400">
+                  {fontSizeOffset > 0 ? `+${fontSizeOffset}` : fontSizeOffset}
+                </span>
+                <button
+                  onClick={() => setFontSizeOffset(prev => prev + 2)}
+                  className="w-8 h-8 flex items-center justify-center bg-white/5 hover:bg-white/10 rounded text-gray-400 hover:text-white transition-colors"
+                  title="Larger text"
+                >
+                  +
+                </button>
+              </div>
+            </div>
             <textarea
               value={text}
               onChange={e => setText(e.target.value)}
@@ -458,8 +480,8 @@ export default function Home() {
                   key={preset.id}
                   onClick={() => setCurrentSize(preset)}
                   className={`flex items-center justify-between px-4 py-3 rounded-lg text-sm font-bold transition-all ${currentSize.id === preset.id
-                      ? 'bg-[var(--primary)] text-white shadow-lg scale-[1.02]'
-                      : 'bg-black/30 text-gray-400 hover:bg-white/10'
+                    ? 'bg-[var(--primary)] text-white shadow-lg scale-[1.02]'
+                    : 'bg-black/30 text-gray-400 hover:bg-white/10'
                     }`}
                 >
                   <span>{preset.label}</span>
