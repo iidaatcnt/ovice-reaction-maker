@@ -43,11 +43,15 @@ export default function Home() {
     ctx.textBaseline = 'middle';
 
     // Dynamic Font Size fitting
-    let fontSize = 40;
-    if (text.length > 5) fontSize = 30;
-    if (text.length > 8) fontSize = 20;
+    // Convert to uppercase for rendering consistency
+    const drawText = text.toUpperCase();
 
-    ctx.font = `900 ${fontSize}px "Outfit", sans-serif`;
+    let fontSize = 40;
+    if (drawText.length > 5) fontSize = 30;
+    if (drawText.length > 8) fontSize = 20;
+
+    // Add Japanese font fallbacks
+    ctx.font = `900 ${fontSize}px "Outfit", "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif`;
 
     // Animation Logic
     const centerX = width / 2;
@@ -87,13 +91,13 @@ export default function Home() {
     }
 
     // Draw Text
-    ctx.fillText(text, 0, 0);
+    ctx.fillText(drawText, 0, 0);
 
     // Stroke/Shadow for better visibility
     ctx.lineWidth = 2;
     ctx.strokeStyle = 'black';
     if (!isTransparent || textColor !== '#000000') {
-      ctx.strokeText(text, 0, 0);
+      ctx.strokeText(drawText, 0, 0);
     }
 
     ctx.restore();
@@ -243,7 +247,7 @@ export default function Home() {
             <input
               type="text"
               value={text}
-              onChange={e => setText(e.target.value.toUpperCase())}
+              onChange={e => setText(e.target.value)}
               maxLength={10}
               placeholder="WOW"
               className="w-full bg-black/30 border border-white/10 text-white p-3 rounded-lg focus:outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 transition-all font-bold text-lg"
