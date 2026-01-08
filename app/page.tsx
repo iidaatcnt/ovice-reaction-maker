@@ -345,6 +345,16 @@ export default function Home() {
 
         </div>
       </main>
+
+      <footer className="w-full max-w-4xl flex justify-between items-center text-xs text-gray-500 mt-8 pb-4 border-t border-white/10 pt-4">
+        <div className="flex items-center gap-2">
+          <span>&copy; 2026 iidaatcnt</span>
+          <img src="/footer-logo.png" alt="Logo" className="h-6 w-auto opacity-80" />
+        </div>
+        <div className="font-mono bg-white/5 px-2 py-1 rounded">
+          v0.2.0-beta
+        </div>
+      </footer>
     </div>
   );
 }
