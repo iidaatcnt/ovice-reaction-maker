@@ -97,14 +97,17 @@ export default function Home() {
     }
 
     // Draw Text
-    ctx.fillText(drawText, 0, 0);
-
-    // Stroke/Shadow for better visibility
-    ctx.lineWidth = 2 * scaleFactor;
+    // Render stroke FIRST so it doesn't overlap the text body (important for small details like handakuten)
+    ctx.lineWidth = 3 * scaleFactor; // Slightly thicker for better visibility behind text
     ctx.strokeStyle = 'black';
+    ctx.lineJoin = 'round'; // Smoother corners
+
     if (!isTransparent || textColor !== '#000000') {
       ctx.strokeText(drawText, 0, 0);
     }
+
+    // Render fill AFTER stroke
+    ctx.fillText(drawText, 0, 0);
 
     ctx.restore();
   }, [text, textColor, bgColor, isTransparent, animationType]);
@@ -288,8 +291,8 @@ export default function Home() {
                   key={s}
                   onClick={() => setSize(s)}
                   className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${size === s
-                      ? 'bg-[var(--primary)] text-white shadow-lg scale-105'
-                      : 'bg-black/30 text-gray-400 hover:bg-white/10'
+                    ? 'bg-[var(--primary)] text-white shadow-lg scale-105'
+                    : 'bg-black/30 text-gray-400 hover:bg-white/10'
                     }`}
                 >
                   {s}px
