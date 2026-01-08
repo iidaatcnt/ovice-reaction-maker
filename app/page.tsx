@@ -46,15 +46,23 @@ export default function Home() {
     // Dynamic Font Size fitting
     // Convert to uppercase for rendering consistency
     const drawText = text.toUpperCase();
+    const lines = drawText.split('\n');
 
     // Calculate scale scale based on base size 128
     const scaleFactor = width / 128;
 
     let baseFontSize = 40;
-    if (drawText.length > 5) baseFontSize = 30;
-    if (drawText.length > 8) baseFontSize = 20;
+    const maxLineLength = Math.max(...lines.map(l => l.length));
+
+    if (maxLineLength > 5) baseFontSize = 30;
+    if (maxLineLength > 8) baseFontSize = 20;
+
+    // Adjust for multiple lines
+    if (lines.length > 2) baseFontSize = Math.min(baseFontSize, 30);
+    if (lines.length > 3) baseFontSize = Math.min(baseFontSize, 20);
 
     const fontSize = baseFontSize * scaleFactor;
+    const lineHeight = fontSize * 1.1; // 1.1 is strictly for line spacing visual
 
     // Add Japanese font fallbacks
     ctx.font = `900 ${fontSize}px "Outfit", "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif`;
@@ -96,18 +104,25 @@ export default function Home() {
       ctx.fillStyle = textColor;
     }
 
-    // Draw Text
-    // Render stroke FIRST so it doesn't overlap the text body (important for small details like handakuten)
-    ctx.lineWidth = 3 * scaleFactor; // Slightly thicker for better visibility behind text
+    // Draw Text Loop
+    // Render text centered
+    const totalHeight = lines.length * lineHeight;
+    const startY = -(totalHeight / 2) + (lineHeight / 2);
+
+    ctx.lineWidth = 3 * scaleFactor;
     ctx.strokeStyle = 'black';
-    ctx.lineJoin = 'round'; // Smoother corners
+    ctx.lineJoin = 'round';
 
-    if (!isTransparent || textColor !== '#000000') {
-      ctx.strokeText(drawText, 0, 0);
-    }
+    lines.forEach((line, i) => {
+      const yOffset = startY + (i * lineHeight);
 
-    // Render fill AFTER stroke
-    ctx.fillText(drawText, 0, 0);
+      // Stroke first
+      if (!isTransparent || textColor !== '#000000') {
+        ctx.strokeText(line, 0, yOffset);
+      }
+      // Then fill
+      ctx.fillText(line, 0, yOffset);
+    });
 
     ctx.restore();
   }, [text, textColor, bgColor, isTransparent, animationType]);
@@ -190,7 +205,9 @@ export default function Home() {
 
       const link = document.createElement('a');
       link.href = url;
-      link.download = `voice-reaction-${text}-${size}px.gif`;
+      // Sanitize filename
+      const safeText = text.replace(/[^a-z0-9]/gi, '_').substring(0, 20);
+      link.download = `voice-reaction-${safeText}-${size}px.gif`;
       link.click();
 
     } catch (e) {
@@ -253,13 +270,13 @@ export default function Home() {
 
           <div className="flex flex-col gap-2">
             <label className="text-sm font-semibold text-gray-400 uppercase tracking-wide">Text</label>
-            <input
-              type="text"
+            <textarea
               value={text}
               onChange={e => setText(e.target.value)}
-              maxLength={10}
+              maxLength={20}
               placeholder="WOW"
-              className="w-full bg-black/30 border border-white/10 text-white p-3 rounded-lg focus:outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 transition-all font-bold text-lg"
+              rows={2}
+              className="w-full bg-black/30 border border-white/10 text-white p-3 rounded-lg focus:outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 transition-all font-bold text-lg resize-none"
             />
           </div>
 
