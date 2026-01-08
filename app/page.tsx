@@ -5,16 +5,32 @@ import { GIFEncoder, quantize, applyPalette } from 'gifenc';
 
 // Types
 type AnimationType = 'pulse' | 'spin' | 'rainbow' | 'slide' | 'shake' | 'bounce' | 'grow' | 'blink';
+type BgPattern = 'none' | 'heart' | 'star' | 'burst' | 'bubble';
+
+type SizePreset = {
+  id: string;
+  label: string;
+  width: number;
+  height: number;
+  desc?: string;
+};
+
+const SIZE_PRESETS: SizePreset[] = [
+  { id: 'rec', label: '長方形', width: 300, height: 200, desc: '300x200 (推奨)' },
+  { id: 'sq', label: '正方形', width: 200, height: 200, desc: '200x200 (スタンプ)' },
+  { id: 'ban', label: '看板', width: 256, height: 60, desc: '256x60 (看板)' },
+];
 
 export default function Home() {
   const [text, setText] = useState('WOW');
   const [textColor, setTextColor] = useState('#ffffff');
   const [bgColor, setBgColor] = useState('#00000000');
   const [isTransparent, setIsTransparent] = useState(true);
+  const [bgPattern, setBgPattern] = useState<BgPattern>('none');
   const [animationType, setAnimationType] = useState<AnimationType>('pulse');
   // const fps = 20; // Unused for now
   const [duration, setDuration] = useState(2); // seconds
-  const [size, setSize] = useState(128); // Canvas size
+  const [currentSize, setCurrentSize] = useState<SizePreset>(SIZE_PRESETS[0]); // Canvas size
   const [isGenerating, setIsGenerating] = useState(false);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -39,6 +55,115 @@ export default function Home() {
       ctx.fillRect(0, 0, width, height);
     }
 
+    // Background Pattern
+    if (bgPattern !== 'none') {
+      ctx.save();
+      // Pattern color: white/low-opacity if colored bg, or solid if transparent
+      ctx.fillStyle = isTransparent ? 'rgba(255, 255, 255, 0.8)' : 'rgba(255, 255, 255, 0.15)';
+      ctx.strokeStyle = isTransparent ? 'rgba(255, 255, 255, 0.8)' : 'rgba(255, 255, 255, 0.15)';
+
+      if (bgPattern === 'burst') {
+        const cx = width / 2;
+        const cy = height / 2;
+        const radius = Math.max(width, height);
+        const rays = 20;
+        ctx.beginPath();
+        for (let i = 0; i < rays; i++) {
+          const angle = (i / rays) * Math.PI * 2;
+          const bgRotation = (animationType === 'spin' || animationType === 'rainbow') ? t * Math.PI : 0;
+          const a1 = angle + bgRotation;
+          const a2 = angle + (Math.PI / rays) * 0.5 + bgRotation;
+
+          ctx.moveTo(cx, cy);
+          ctx.lineTo(cx + Math.cos(a1) * radius, cy + Math.sin(a1) * radius);
+          ctx.lineTo(cx + Math.cos(a2) * radius, cy + Math.sin(a2) * radius);
+          ctx.closePath();
+        }
+        ctx.fill();
+      } else if (bgPattern === 'bubble') {
+        const pad = 10;
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        // simple rect fallback for compatibility if roundRect missing
+        if (ctx.roundRect) {
+          ctx.roundRect(pad, pad, width - pad * 2, height - pad * 2, 20);
+        } else {
+          ctx.rect(pad, pad, width - pad * 2, height - pad * 2);
+        }
+        ctx.stroke();
+
+        ctx.beginPath();
+        // draw small tail at bottom center
+        ctx.moveTo(width / 2 - 10, height - pad * 2);
+        ctx.lineTo(width / 2, height - pad + 5);
+        ctx.lineTo(width / 2 + 10, height - pad * 2);
+        ctx.fill();
+
+      } else {
+        // Scatter patterns (Heart, Star)
+        const rows = 4;
+        const cols = 5;
+        const cellW = width / cols;
+        const cellH = height / rows;
+
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            const cx = c * cellW + cellW / 2;
+            const cy = r * cellH + cellH / 2;
+            // Stagger
+            const offX = (r % 2 === 0) ? 0 : cellW / 2;
+
+            const drawSize = Math.min(cellW, cellH) * 0.3;
+
+            ctx.save();
+            ctx.translate(cx + offX - (r % 2 ? cellW / 2 : 0), cy);
+
+            if (bgPattern === 'heart') {
+              // Heart path
+              ctx.beginPath();
+              const topCurveHeight = drawSize * 0.3;
+              ctx.moveTo(0, drawSize * 0.3);
+              ctx.bezierCurveTo(0, 0, -drawSize, 0, -drawSize, topCurveHeight);
+              ctx.bezierCurveTo(-drawSize, (drawSize + topCurveHeight) / 2,
+                0, (drawSize + topCurveHeight),
+                0, drawSize);
+              ctx.bezierCurveTo(0, (drawSize + topCurveHeight),
+                drawSize, (drawSize + topCurveHeight) / 2,
+                drawSize, topCurveHeight);
+              ctx.bezierCurveTo(drawSize, 0, 0, 0, 0, drawSize * 0.3);
+              ctx.fill();
+            } else if (bgPattern === 'star') {
+              // Star path
+              const spikes = 5;
+              const outer = drawSize;
+              const inner = drawSize * 0.5;
+              let rot = Math.PI / 2 * 3;
+              const step = Math.PI / spikes;
+
+              ctx.beginPath();
+              ctx.moveTo(0, 0 - outer);
+              for (let i = 0; i < spikes; i++) {
+                let x = Math.cos(rot) * outer;
+                let y = Math.sin(rot) * outer;
+                ctx.lineTo(x, y);
+                rot += step;
+
+                x = Math.cos(rot) * inner;
+                y = Math.sin(rot) * inner;
+                ctx.lineTo(x, y);
+                rot += step;
+              }
+              ctx.lineTo(0, 0 - outer);
+              ctx.closePath();
+              ctx.fill();
+            }
+            ctx.restore();
+          }
+        }
+      }
+      ctx.restore();
+    }
+
     // Font settings
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -49,7 +174,8 @@ export default function Home() {
     const lines = drawText.split('\n');
 
     // Calculate scale scale based on base size 128
-    const scaleFactor = width / 128;
+    // Use the smaller dimension to scale font appropriate for the box
+    const scaleFactor = Math.min(width, height) / 128;
 
     let baseFontSize = 40;
     const maxLineLength = Math.max(...lines.map(l => l.length));
@@ -125,7 +251,7 @@ export default function Home() {
     });
 
     ctx.restore();
-  }, [text, textColor, bgColor, isTransparent, animationType]);
+  }, [text, textColor, bgColor, isTransparent, bgPattern, animationType]);
 
   // Live Preview Loop
   useEffect(() => {
@@ -138,13 +264,13 @@ export default function Home() {
       const loopTime = duration * 1000;
       const t = (now % loopTime) / loopTime;
 
-      renderFrame(ctx, size, size, t);
+      renderFrame(ctx, currentSize.width, currentSize.height, t);
       animationId = requestAnimationFrame(animate);
     };
 
     animate();
     return () => cancelAnimationFrame(animationId);
-  }, [renderFrame, duration, size]);
+  }, [renderFrame, duration, currentSize]);
 
   // Generate GIF
   const handleDownload = async () => {
@@ -158,8 +284,8 @@ export default function Home() {
       const fps = 20;
       const gif = new GIFEncoder();
       const frames = fps * duration;
-      const width = size;
-      const height = size;
+      const width = currentSize.width;
+      const height = currentSize.height;
 
       const ctx = canvasRef.current.getContext('2d', { willReadFrequently: true });
       if (!ctx) throw new Error("No context");
@@ -209,7 +335,7 @@ export default function Home() {
       const now = new Date();
       const yyyymmdd = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}`;
 
-      link.download = `voice-reaction-${yyyymmdd}-${size}px.gif`;
+      link.download = `voice-reaction-${yyyymmdd}-${width}x${height}.gif`;
       link.click();
 
     } catch (e) {
@@ -239,32 +365,40 @@ export default function Home() {
         {/* Preview Section */}
         <div className="flex flex-col items-center gap-4">
           <div className="p-[2px] rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] shadow-[0_0_40px_-10px_var(--primary-glow)]">
-            <canvas
-              ref={previewCanvasRef}
-              width={size}
-              height={size}
-              className="bg-[#2a2a2a] rounded-[calc(var(--radius-md)-2px)] block max-w-[256px] max-h-[256px] w-full h-auto aspect-square image-pixelated cursor-pointer hover:scale-105 transition-transform"
+            {/* Wrapper to center canvas and show checkerboard */}
+            <div className={`relative bg-[#2a2a2a] rounded-[calc(var(--radius-md)-2px)] overflow-hidden image-pixelated`}
               style={{
+                width: currentSize.width,
+                height: currentSize.height,
                 backgroundImage: `
-                  linear-gradient(45deg, #1f1f1f 25%, transparent 25%),
-                  linear-gradient(-45deg, #1f1f1f 25%, transparent 25%),
-                  linear-gradient(45deg, transparent 75%, #1f1f1f 75%),
-                  linear-gradient(-45deg, transparent 75%, #1f1f1f 75%)
-                `,
+                      linear-gradient(45deg, #1f1f1f 25%, transparent 25%),
+                      linear-gradient(-45deg, #1f1f1f 25%, transparent 25%),
+                      linear-gradient(45deg, transparent 75%, #1f1f1f 75%),
+                      linear-gradient(-45deg, transparent 75%, #1f1f1f 75%)
+                    `,
                 backgroundSize: '20px 20px',
                 backgroundPosition: '0 0, 0 10px, 10px -10px, -10px 0px'
               }}
-              title="Preview"
-            />
+            >
+              <canvas
+                ref={previewCanvasRef}
+                width={currentSize.width}
+                height={currentSize.height}
+                className="w-full h-full block"
+                title="Preview"
+              />
+            </div>
             {/* Hidden canvas for generation */}
             <canvas
               ref={canvasRef}
-              width={size}
-              height={size}
+              width={currentSize.width}
+              height={currentSize.height}
               style={{ display: 'none' }}
             />
           </div>
-          <p className="text-sm font-mono text-gray-500">Live Preview ({size}x{size})</p>
+          <p className="text-sm font-mono text-gray-500">
+            Preview ({currentSize.width}x{currentSize.height})
+          </p>
         </div>
 
         {/* Controls Section */}
@@ -282,8 +416,8 @@ export default function Home() {
             />
           </div>
 
-          <div className="flex gap-4">
-            <div className="flex-1 flex flex-col gap-2">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex flex-col gap-2">
               <label className="text-sm font-semibold text-gray-400 uppercase tracking-wide">Animation</label>
               <select
                 value={animationType}
@@ -300,21 +434,36 @@ export default function Home() {
                 <option value="blink">Blink</option>
               </select>
             </div>
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-semibold text-gray-400 uppercase tracking-wide">Pattern</label>
+              <select
+                value={bgPattern}
+                onChange={e => setBgPattern(e.target.value as BgPattern)}
+                className="w-full bg-black/30 border border-white/10 text-white p-3 rounded-lg focus:outline-none focus:border-[var(--primary)] cursor-pointer"
+              >
+                <option value="none">None</option>
+                <option value="heart">Heart</option>
+                <option value="star">Star</option>
+                <option value="burst">Burst</option>
+                <option value="bubble">Bubble</option>
+              </select>
+            </div>
           </div>
 
           <div className="flex flex-col gap-2">
             <label className="text-sm font-semibold text-gray-400 uppercase tracking-wide">Size</label>
-            <div className="flex gap-2">
-              {[128, 256, 512].map((s) => (
+            <div className="flex flex-col gap-2">
+              {SIZE_PRESETS.map((preset) => (
                 <button
-                  key={s}
-                  onClick={() => setSize(s)}
-                  className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${size === s
-                    ? 'bg-[var(--primary)] text-white shadow-lg scale-105'
-                    : 'bg-black/30 text-gray-400 hover:bg-white/10'
+                  key={preset.id}
+                  onClick={() => setCurrentSize(preset)}
+                  className={`flex items-center justify-between px-4 py-3 rounded-lg text-sm font-bold transition-all ${currentSize.id === preset.id
+                      ? 'bg-[var(--primary)] text-white shadow-lg scale-[1.02]'
+                      : 'bg-black/30 text-gray-400 hover:bg-white/10'
                     }`}
                 >
-                  {s}px
+                  <span>{preset.label}</span>
+                  <span className="font-mono text-xs opacity-70">{preset.desc}</span>
                 </button>
               ))}
             </div>
