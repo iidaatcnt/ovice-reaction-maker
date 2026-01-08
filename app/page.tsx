@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { GIFEncoder, quantize, applyPalette } from 'gifenc';
 
 // Types
@@ -23,7 +23,7 @@ export default function Home() {
   const SIZE = 128; // Standard emoji size suitable for reaction
 
   // Render a single frame
-  const renderFrame = (
+  const renderFrame = useCallback((
     ctx: CanvasRenderingContext2D,
     width: number,
     height: number,
@@ -97,7 +97,7 @@ export default function Home() {
     }
 
     ctx.restore();
-  };
+  }, [text, textColor, bgColor, isTransparent, animationType]);
 
   // Live Preview Loop
   useEffect(() => {
@@ -116,7 +116,7 @@ export default function Home() {
 
     animate();
     return () => cancelAnimationFrame(animationId);
-  }, [text, textColor, bgColor, isTransparent, animationType, duration]);
+  }, [renderFrame, duration]);
 
   // Generate GIF
   const handleDownload = async () => {
