@@ -188,6 +188,9 @@ export default function Home() {
     if (lines.length > 2) baseFontSize = Math.min(baseFontSize, 30);
     if (lines.length > 3) baseFontSize = Math.min(baseFontSize, 20);
 
+    // Apply user adjustment
+    baseFontSize = Math.max(5, baseFontSize + fontSizeOffset);
+
     const fontSize = baseFontSize * scaleFactor;
     const lineHeight = fontSize * 1.1; // 1.1 is strictly for line spacing visual
 
@@ -252,7 +255,7 @@ export default function Home() {
     });
 
     ctx.restore();
-  }, [text, textColor, bgColor, isTransparent, bgPattern, animationType]);
+  }, [text, textColor, bgColor, isTransparent, bgPattern, animationType, fontSizeOffset]);
 
   // Live Preview Loop
   useEffect(() => {
