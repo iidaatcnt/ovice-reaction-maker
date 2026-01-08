@@ -205,9 +205,11 @@ export default function Home() {
 
       const link = document.createElement('a');
       link.href = url;
-      // Sanitize filename
-      const safeText = text.replace(/[^a-z0-9]/gi, '_').substring(0, 20);
-      link.download = `voice-reaction-${safeText}-${size}px.gif`;
+
+      const now = new Date();
+      const yyyymmdd = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}`;
+
+      link.download = `voice-reaction-${yyyymmdd}-${size}px.gif`;
       link.click();
 
     } catch (e) {
