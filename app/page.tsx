@@ -14,13 +14,14 @@ export default function Home() {
   const [animationType, setAnimationType] = useState<AnimationType>('pulse');
   // const fps = 20; // Unused for now
   const [duration, setDuration] = useState(2); // seconds
+  const [size, setSize] = useState(128); // Canvas size
   const [isGenerating, setIsGenerating] = useState(false);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const previewCanvasRef = useRef<HTMLCanvasElement>(null);
 
   // Constants
-  const SIZE = 128; // Standard emoji size suitable for reaction
+  // const SIZE = 128; // Removed constant
 
   // Render a single frame
   const renderFrame = useCallback((
@@ -46,9 +47,14 @@ export default function Home() {
     // Convert to uppercase for rendering consistency
     const drawText = text.toUpperCase();
 
-    let fontSize = 40;
-    if (drawText.length > 5) fontSize = 30;
-    if (drawText.length > 8) fontSize = 20;
+    // Calculate scale scale based on base size 128
+    const scaleFactor = width / 128;
+
+    let baseFontSize = 40;
+    if (drawText.length > 5) baseFontSize = 30;
+    if (drawText.length > 8) baseFontSize = 20;
+
+    const fontSize = baseFontSize * scaleFactor;
 
     // Add Japanese font fallbacks
     ctx.font = `900 ${fontSize}px "Outfit", "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif`;
@@ -66,8 +72,8 @@ export default function Home() {
     } else if (animationType === 'spin') {
       ctx.rotate(t * Math.PI * 2);
     } else if (animationType === 'shake') {
-      const shakeX = Math.sin(t * Math.PI * 8) * 5;
-      const shakeY = Math.cos(t * Math.PI * 6) * 3;
+      const shakeX = Math.sin(t * Math.PI * 8) * 5 * scaleFactor;
+      const shakeY = Math.cos(t * Math.PI * 6) * 3 * scaleFactor;
       ctx.translate(shakeX, shakeY);
     } else if (animationType === 'rainbow') {
       const hue = t * 360;
@@ -76,7 +82,7 @@ export default function Home() {
       const offsetX = (t - 0.5) * width * 1.5;
       ctx.translate(offsetX, 0);
     } else if (animationType === 'bounce') {
-      const bounceY = Math.sin(t * Math.PI * 2) * 10;
+      const bounceY = Math.sin(t * Math.PI * 2) * 10 * scaleFactor;
       ctx.translate(0, bounceY);
     } else if (animationType === 'grow') {
       const scale = t < 0.5 ? t * 2 : (1 - t) * 2;
@@ -94,7 +100,7 @@ export default function Home() {
     ctx.fillText(drawText, 0, 0);
 
     // Stroke/Shadow for better visibility
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 2 * scaleFactor;
     ctx.strokeStyle = 'black';
     if (!isTransparent || textColor !== '#000000') {
       ctx.strokeText(drawText, 0, 0);
@@ -114,13 +120,13 @@ export default function Home() {
       const loopTime = duration * 1000;
       const t = (now % loopTime) / loopTime;
 
-      renderFrame(ctx, SIZE, SIZE, t);
+      renderFrame(ctx, size, size, t);
       animationId = requestAnimationFrame(animate);
     };
 
     animate();
     return () => cancelAnimationFrame(animationId);
-  }, [renderFrame, duration]);
+  }, [renderFrame, duration, size]);
 
   // Generate GIF
   const handleDownload = async () => {
@@ -134,8 +140,8 @@ export default function Home() {
       const fps = 20;
       const gif = new GIFEncoder();
       const frames = fps * duration;
-      const width = SIZE;
-      const height = SIZE;
+      const width = size;
+      const height = size;
 
       const ctx = canvasRef.current.getContext('2d', { willReadFrequently: true });
       if (!ctx) throw new Error("No context");
@@ -181,7 +187,7 @@ export default function Home() {
 
       const link = document.createElement('a');
       link.href = url;
-      link.download = `voice-reaction-${text}.gif`;
+      link.download = `voice-reaction-${text}-${size}px.gif`;
       link.click();
 
     } catch (e) {
@@ -213,9 +219,9 @@ export default function Home() {
           <div className="p-[2px] rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] shadow-[0_0_40px_-10px_var(--primary-glow)]">
             <canvas
               ref={previewCanvasRef}
-              width={SIZE}
-              height={SIZE}
-              className="bg-[#2a2a2a] rounded-[calc(var(--radius-md)-2px)] block w-[256px] h-[256px] image-pixelated cursor-pointer hover:scale-105 transition-transform"
+              width={size}
+              height={size}
+              className="bg-[#2a2a2a] rounded-[calc(var(--radius-md)-2px)] block max-w-[256px] max-h-[256px] w-full h-auto aspect-square image-pixelated cursor-pointer hover:scale-105 transition-transform"
               style={{
                 backgroundImage: `
                   linear-gradient(45deg, #1f1f1f 25%, transparent 25%),
@@ -231,12 +237,12 @@ export default function Home() {
             {/* Hidden canvas for generation */}
             <canvas
               ref={canvasRef}
-              width={SIZE}
-              height={SIZE}
+              width={size}
+              height={size}
               style={{ display: 'none' }}
             />
           </div>
-          <p className="text-sm font-mono text-gray-500">Live Preview ({SIZE}x{SIZE})</p>
+          <p className="text-sm font-mono text-gray-500">Live Preview ({size}x{size})</p>
         </div>
 
         {/* Controls Section */}
@@ -271,6 +277,24 @@ export default function Home() {
                 <option value="grow">Grow</option>
                 <option value="blink">Blink</option>
               </select>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-semibold text-gray-400 uppercase tracking-wide">Size</label>
+            <div className="flex gap-2">
+              {[128, 256, 512].map((s) => (
+                <button
+                  key={s}
+                  onClick={() => setSize(s)}
+                  className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${size === s
+                      ? 'bg-[var(--primary)] text-white shadow-lg scale-105'
+                      : 'bg-black/30 text-gray-400 hover:bg-white/10'
+                    }`}
+                >
+                  {s}px
+                </button>
+              ))}
             </div>
           </div>
 
