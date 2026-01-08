@@ -144,6 +144,20 @@ export default function Home() {
         const imageData = ctx.getImageData(0, 0, width, height);
         const { data } = imageData;
 
+        // Alpha Thresholding to fix dirty edges on transparent background
+        // Converts semi-transparent pixels (antialiasing) to fully transparent or opaque
+        if (isTransparent) {
+          for (let j = 0; j < data.length; j += 4) {
+            const alpha = data[j + 3];
+            // Threshold: if alpha < 128, make it transparent (0). Else opaque (255)
+            if (alpha < 128) {
+              data[j + 3] = 0;
+            } else {
+              data[j + 3] = 255;
+            }
+          }
+        }
+
         const palette = quantize(data, 256);
         const index = applyPalette(data, palette);
 
