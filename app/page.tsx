@@ -351,34 +351,39 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center p-8 gap-8">
-      <header className="text-center space-y-2 mt-8">
-        <h1 className="text-5xl font-extrabold tracking-tight">
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-[var(--primary)] to-[var(--accent)]">
-            Ovice
-          </span>{" "}
-          Reaction Maker
+    <div className="min-h-screen bg-[#f1f5f9] text-[#0f172a] font-sans selection:bg-blue-200 selection:text-blue-900 pb-20">
+
+      {/* Header */}
+      <header className="p-8 pb-12 text-center flex flex-col items-center gap-4 bg-white/80 backdrop-blur-md border-b border-white shadow-sm">
+        <div className="bg-white p-4 rounded-3xl shadow-xl mb-2 border border-blue-50">
+          {/* Logo Fallback Container */}
+          <div className="w-[120px] h-[120px] bg-blue-600 rounded-2xl flex items-center justify-center text-white font-black text-4xl shadow-lg shadow-blue-200">
+            OR
+          </div>
+        </div>
+        <h1 className="text-4xl md:text-5xl font-black tracking-tighter bg-gradient-to-r from-blue-600 to-emerald-500 bg-clip-text text-transparent">
+          Ovice Reaction Maker
         </h1>
-        <p className="text-[var(--text-secondary)] text-lg">
-          Create animated GIFs for your virtual office reactions!
+        <p className="text-slate-500 max-w-md mx-auto leading-relaxed font-medium">
+          Create friendly animated reaction GIFs for your virtual office!
         </p>
       </header>
 
-      <main className="w-full max-w-4xl flex flex-col md:flex-row gap-8 items-start justify-center">
+      <main className="w-full max-w-5xl px-4 mt-12 flex flex-col lg:flex-row gap-10 items-start justify-center mx-auto">
 
         {/* Preview Section */}
-        <div className="flex flex-col items-center gap-4">
-          <div className="p-[2px] rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] shadow-[0_0_40px_-10px_var(--primary-glow)]">
+        <div className="flex flex-col items-center gap-6 w-full lg:w-auto">
+          <div className="p-1 rounded-2xl bg-white shadow-2xl border border-blue-100">
             {/* Wrapper to center canvas and show checkerboard */}
-            <div className={`relative bg-[#2a2a2a] rounded-[calc(var(--radius-md)-2px)] overflow-hidden image-pixelated`}
+            <div className="relative bg-slate-50 rounded-xl overflow-hidden image-pixelated border border-slate-100"
               style={{
                 width: currentSize.width,
                 height: currentSize.height,
                 backgroundImage: `
-                      linear-gradient(45deg, #1f1f1f 25%, transparent 25%),
-                      linear-gradient(-45deg, #1f1f1f 25%, transparent 25%),
-                      linear-gradient(45deg, transparent 75%, #1f1f1f 75%),
-                      linear-gradient(-45deg, transparent 75%, #1f1f1f 75%)
+                      linear-gradient(45deg, #f1f5f9 25%, transparent 25%),
+                      linear-gradient(-45deg, #f1f5f9 25%, transparent 25%),
+                      linear-gradient(45deg, transparent 75%, #f1f5f9 75%),
+                      linear-gradient(-45deg, transparent 75%, #f1f5f9 75%)
                     `,
                 backgroundSize: '20px 20px',
                 backgroundPosition: '0 0, 0 10px, 10px -10px, -10px 0px'
@@ -400,44 +405,44 @@ export default function Home() {
               style={{ display: 'none' }}
             />
           </div>
-          <p className="text-sm font-mono text-gray-500">
-            Preview ({currentSize.width}x{currentSize.height})
+          <p className="text-xs font-bold font-mono text-slate-400 bg-slate-100 px-3 py-1 rounded-full uppercase tracking-wider">
+            {currentSize.width} × {currentSize.height} px
           </p>
         </div>
 
         {/* Controls Section */}
-        <div className="flex-1 w-full bg-[#1a1a23] p-8 rounded-3xl border border-white/5 flex flex-col gap-6 shadow-xl">
+        <div className="flex-1 w-full bg-white p-8 md:p-10 rounded-[32px] border border-blue-50 flex flex-col gap-8 shadow-2xl shadow-blue-900/5">
 
-          <div className="flex flex-col gap-2">
+          {/* Text Control */}
+          <div className="flex flex-col gap-3">
             <div className="flex justify-between items-center">
-              <label className="text-sm font-semibold text-gray-400 uppercase tracking-wide">Text</label>
-              <div className="flex items-center gap-2 bg-black/30 rounded-lg p-1">
+              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Text Input</label>
+              <div className="flex items-center gap-1 bg-slate-50 rounded-xl p-1 border border-slate-100">
                 <button
                   onClick={() => setFontSizeOffset(prev => prev - 2)}
-                  className="w-8 h-8 flex items-center justify-center bg-white/5 hover:bg-white/10 rounded text-gray-400 hover:text-white transition-colors"
+                  className="w-8 h-8 flex items-center justify-center hover:bg-white hover:shadow-sm rounded-lg text-slate-400 hover:text-blue-600 transition-all font-bold"
                   title="Smaller text"
                 >
                   -
                 </button>
-                <span className="text-xs font-mono w-12 text-center text-gray-400">
+                <span className="text-xs font-bold font-mono w-10 text-center text-slate-600">
                   {fontSizeOffset > 0 ? `+${fontSizeOffset}` : fontSizeOffset}
                 </span>
                 <button
                   onClick={() => setFontSizeOffset(prev => prev + 2)}
-                  className="w-8 h-8 flex items-center justify-center bg-white/5 hover:bg-white/10 rounded text-gray-400 hover:text-white transition-colors"
+                  className="w-8 h-8 flex items-center justify-center hover:bg-white hover:shadow-sm rounded-lg text-slate-400 hover:text-blue-600 transition-all font-bold"
                   title="Larger text"
                 >
                   +
                 </button>
-                <div className="w-[1px] h-4 bg-white/10 mx-1"></div>
+                <div className="w-[1px] h-4 bg-slate-200 mx-1"></div>
                 <button
                   onClick={() => setFontSizeOffset(0)}
-                  className="w-8 h-8 flex items-center justify-center bg-white/5 hover:bg-white/10 rounded text-gray-400 hover:text-white transition-colors"
-                  title="Reset text size"
+                  className="w-8 h-8 flex items-center justify-center hover:bg-white hover:shadow-sm rounded-lg text-slate-400 hover:text-blue-600 transition-all"
+                  title="Reset size"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-                    <path d="M3 3v5h5" />
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" />
                   </svg>
                 </button>
               </div>
@@ -445,20 +450,20 @@ export default function Home() {
             <textarea
               value={text}
               onChange={e => setText(e.target.value)}
+              placeholder="YOUR MESSAGE"
               maxLength={20}
-              placeholder="WOW"
               rows={2}
-              className="w-full bg-black/30 border border-white/10 text-white p-3 rounded-lg focus:outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 transition-all font-bold text-lg resize-none"
+              className="w-full bg-slate-50 border border-slate-200 text-slate-800 p-4 rounded-2xl focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition-all font-black text-xl resize-none placeholder:text-slate-300"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-semibold text-gray-400 uppercase tracking-wide">Animation</label>
+              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Animation</label>
               <select
                 value={animationType}
                 onChange={e => setAnimationType(e.target.value as AnimationType)}
-                className="w-full bg-black/30 border border-white/10 text-white p-3 rounded-lg focus:outline-none focus:border-[var(--primary)] cursor-pointer"
+                className="w-full bg-slate-50 border border-slate-200 text-slate-700 p-4 rounded-2xl focus:outline-none focus:border-blue-400 cursor-pointer font-bold"
               >
                 <option value="pulse">Pulse</option>
                 <option value="spin">Spin</option>
@@ -471,11 +476,11 @@ export default function Home() {
               </select>
             </div>
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-semibold text-gray-400 uppercase tracking-wide">Pattern</label>
+              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Pattern</label>
               <select
                 value={bgPattern}
                 onChange={e => setBgPattern(e.target.value as BgPattern)}
-                className="w-full bg-black/30 border border-white/10 text-white p-3 rounded-lg focus:outline-none focus:border-[var(--primary)] cursor-pointer"
+                className="w-full bg-slate-50 border border-slate-200 text-slate-700 p-4 rounded-2xl focus:outline-none focus:border-blue-400 cursor-pointer font-bold"
               >
                 <option value="none">None</option>
                 <option value="heart">Heart</option>
@@ -486,70 +491,78 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-gray-400 uppercase tracking-wide">Size</label>
-            <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-3">
+            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Canvas Size</label>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {SIZE_PRESETS.map((preset) => (
                 <button
                   key={preset.id}
                   onClick={() => setCurrentSize(preset)}
-                  className={`flex items-center justify-between px-4 py-3 rounded-lg text-sm font-bold transition-all ${currentSize.id === preset.id
-                    ? 'bg-[var(--primary)] text-white shadow-lg scale-[1.02]'
-                    : 'bg-black/30 text-gray-400 hover:bg-white/10'
+                  className={`flex flex-col items-center justify-center p-4 rounded-2xl text-sm font-bold transition-all border-2 ${currentSize.id === preset.id
+                    ? 'bg-blue-600 border-blue-600 text-white shadow-lg scale-[1.02]'
+                    : 'bg-slate-50 border-slate-100 text-slate-500 hover:border-blue-200 hover:bg-white hover:text-blue-600'
                     }`}
                 >
                   <span>{preset.label}</span>
-                  <span className="font-mono text-xs opacity-70">{preset.desc}</span>
+                  <span className={`font-mono text-[10px] mt-1 ${currentSize.id === preset.id ? 'opacity-80' : 'opacity-50'}`}>{preset.desc}</span>
                 </button>
               ))}
             </div>
           </div>
 
-          <div className="flex gap-4 flex-wrap">
-            <div className="flex-1 min-w-[120px] flex flex-col gap-2">
-              <label className="text-sm font-semibold text-gray-400 uppercase tracking-wide">Text Color</label>
-              <div className="flex items-center gap-3 bg-black/30 p-2 rounded-lg border border-white/10">
-                <input
-                  type="color"
-                  value={textColor}
-                  onChange={e => setTextColor(e.target.value)}
-                  className="w-8 h-8 rounded cursor-pointer bg-transparent border-none p-0"
-                />
-                <span className="font-mono text-sm">{textColor}</span>
+          <div className="flex flex-col sm:flex-row gap-8">
+            <div className="flex-1 flex flex-col gap-3">
+              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Text Style</label>
+              <div className="flex items-center gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                <div className="relative">
+                  <input
+                    type="color"
+                    value={textColor}
+                    onChange={e => setTextColor(e.target.value)}
+                    className="w-10 h-10 rounded-xl cursor-pointer bg-white border border-slate-200 p-1"
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-xs font-bold text-slate-400 uppercase tracking-[0.1em]">Color</span>
+                  <span className="font-mono text-sm font-bold text-slate-700">{textColor.toUpperCase()}</span>
+                </div>
               </div>
             </div>
 
-            <div className="flex-1 min-w-[150px] flex flex-col gap-2">
-              <label className="text-sm font-semibold text-gray-400 uppercase tracking-wide">Background</label>
-              <div className="flex flex-col gap-2">
-                <label className="flex items-center gap-2 cursor-pointer select-none">
-                  <input
-                    type="checkbox"
-                    checked={isTransparent}
-                    onChange={e => setIsTransparent(e.target.checked)}
-                    className="w-5 h-5 rounded border-gray-500 text-[var(--primary)] focus:ring-[var(--primary)] bg-transparent"
-                  />
-                  <span className="text-sm">Transparent</span>
+            <div className="flex-1 flex flex-col gap-3">
+              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Background</label>
+              <div className="flex flex-col gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                <label className="flex items-center gap-3 cursor-pointer select-none group">
+                  <div className="relative">
+                    <input
+                      type="checkbox"
+                      checked={isTransparent}
+                      onChange={e => setIsTransparent(e.target.checked)}
+                      className="peer hidden"
+                    />
+                    <div className="w-12 h-6 bg-slate-200 rounded-full peer-checked:bg-emerald-500 transition-all after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-6"></div>
+                  </div>
+                  <span className="text-sm font-bold text-slate-600 group-hover:text-slate-900 transition-colors">Transparent GIF</span>
                 </label>
                 {!isTransparent && (
-                  <div className="flex items-center gap-3 bg-black/30 p-2 rounded-lg border border-white/10 animate-in fade-in slide-in-from-top-1 duration-200">
+                  <div className="flex items-center gap-4 bg-white p-2 rounded-xl border border-slate-100 animate-in fade-in slide-in-from-top-1 duration-200">
                     <input
                       type="color"
                       value={bgColor}
                       onChange={e => setBgColor(e.target.value)}
-                      className="w-8 h-8 rounded cursor-pointer bg-transparent border-none p-0"
+                      className="w-8 h-8 rounded-lg cursor-pointer bg-white border border-slate-200 p-0.5"
                     />
-                    <span className="font-mono text-sm">{bgColor}</span>
+                    <span className="font-mono text-sm font-bold text-slate-700">{bgColor.toUpperCase()}</span>
                   </div>
                 )}
               </div>
             </div>
           </div>
 
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-4">
             <div className="flex justify-between items-center">
-              <label className="text-sm font-semibold text-gray-400 uppercase tracking-wide">Duration</label>
-              <span className="text-xs font-mono bg-white/10 px-2 py-1 rounded">{duration}s</span>
+              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Duration</label>
+              <span className="text-xs font-bold font-mono bg-blue-50 text-blue-600 px-3 py-1 rounded-full">{duration}s</span>
             </div>
             <input
               type="range"
@@ -558,38 +571,39 @@ export default function Home() {
               step="0.5"
               value={duration}
               onChange={e => setDuration(parseFloat(e.target.value))}
-              className="w-full accent-[var(--primary)] h-2 bg-white/10 rounded-lg appearance-none cursor-pointer"
+              className="w-full accent-blue-600 h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer"
             />
           </div>
 
           <button
-            className="mt-2 w-full py-4 text-lg font-black uppercase text-white rounded-xl shadow-lg transform transition-all hover:-translate-y-1 hover:shadow-2xl active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-[var(--primary)] to-[var(--accent)]"
+            className="group relative mt-4 w-full py-5 text-xl font-black uppercase text-white rounded-3xl overflow-hidden shadow-2xl shadow-blue-500/20 transform transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed bg-blue-600"
             onClick={handleDownload}
             disabled={isGenerating}
           >
+            <div className="absolute inset-0 bg-white/20 group-hover:translate-x-full transition-transform duration-500 ease-out -translate-x-full"></div>
             {isGenerating ? (
-              <span className="flex items-center justify-center gap-2">
-                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <span className="flex items-center justify-center gap-3">
+                <svg className="animate-spin h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                Generating...
+                Processing...
               </span>
-            ) : 'Download GIF'}
+            ) : 'Generate & Download'}
           </button>
-
         </div>
-      </main >
+      </main>
 
-      <footer className="w-full max-w-4xl flex justify-between items-center text-xs text-gray-500 mt-8 pb-4 border-t border-white/10 pt-4">
-        <div className="flex items-center gap-2">
-          <span>&copy; 2026 iidaatcnt</span>
-          <img src="/footer-logo.png" alt="Logo" className="h-6 w-auto opacity-80" />
+      <footer className="w-full max-w-5xl px-8 flex justify-between items-center text-xs font-bold text-slate-400 mt-16 pb-12 border-t border-slate-100 pt-8 mx-auto">
+        <div className="flex items-center gap-4">
+          <span>&copy; 2026 サバ缶＠リベ民</span>
+          <div className="w-px h-3 bg-slate-200"></div>
+          <span className="text-slate-300">Reaction Generator for Communication Tools</span>
         </div>
-        <div className="font-mono bg-white/5 px-2 py-1 rounded">
-          v0.2.0-beta
+        <div className="font-mono bg-slate-100 text-slate-500 px-3 py-1 rounded-full">
+          v0.3.0-light
         </div>
       </footer>
-    </div >
+    </div>
   );
 }
