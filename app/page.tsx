@@ -22,7 +22,7 @@ const SIZE_PRESETS: SizePreset[] = [
 ];
 
 export default function Home() {
-  const [text, setText] = useState('WOW');
+  const [text, setText] = useState('YES');
   const [textColor, setTextColor] = useState('#ffffff');
   const [bgColor, setBgColor] = useState('#00000000');
   const [isTransparent, setIsTransparent] = useState(true);
@@ -354,22 +354,18 @@ export default function Home() {
     <div className="min-h-screen bg-[#f1f5f9] text-[#0f172a] font-sans selection:bg-blue-200 selection:text-blue-900 pb-20">
 
       {/* Header */}
-      <header className="p-8 pb-12 text-center flex flex-col items-center gap-4 bg-white/80 backdrop-blur-md border-b border-white shadow-sm">
-        <div className="bg-white p-4 rounded-3xl shadow-xl mb-2 border border-blue-50">
-          {/* Logo Fallback Container */}
-          <div className="w-[120px] h-[120px] bg-blue-600 rounded-2xl flex items-center justify-center text-white font-black text-4xl shadow-lg shadow-blue-200">
-            OR
-          </div>
+      <header className="p-4 md:p-6 text-center flex flex-row items-center justify-center gap-4 bg-white/80 backdrop-blur-md border-b border-white shadow-sm">
+        <div className="text-center">
+          <h1 className="text-2xl md:text-3xl font-black tracking-tighter bg-gradient-to-r from-blue-600 to-emerald-500 bg-clip-text text-transparent">
+            Ovice リアクションメーカー
+          </h1>
+          <p className="hidden md:block text-slate-500 text-sm font-medium">
+            バーチャルオフィスで使えるアニメーションGIFを簡単に作成できます
+          </p>
         </div>
-        <h1 className="text-4xl md:text-5xl font-black tracking-tighter bg-gradient-to-r from-blue-600 to-emerald-500 bg-clip-text text-transparent">
-          Ovice リアクションメーカー
-        </h1>
-        <p className="text-slate-500 max-w-md mx-auto leading-relaxed font-medium">
-          バーチャルオフィスで使えるアニメーションGIFを簡単に作成できます
-        </p>
       </header>
 
-      <main className="w-full max-w-5xl px-4 mt-12 flex flex-col lg:flex-row gap-10 items-start justify-center mx-auto">
+      <main className="w-full max-w-[1400px] px-4 mt-8 flex flex-col lg:flex-row gap-8 items-start justify-center mx-auto">
 
         {/* Preview Section */}
         <div className="flex flex-col items-center gap-6 w-full lg:w-auto">
@@ -594,8 +590,9 @@ export default function Home() {
         </div>
       </main>
 
-      <footer className="w-full max-w-5xl px-8 flex justify-between items-center text-xs font-bold text-slate-400 mt-16 pb-12 border-t border-slate-100 pt-8 mx-auto">
+      <footer className="w-full max-w-[1400px] px-8 flex justify-between items-center text-xs font-bold text-slate-400 mt-16 pb-12 border-t border-slate-100 pt-8 mx-auto">
         <div className="flex items-center gap-4">
+          <img src="/footer-logo.png" alt="Avatar" className="w-8 h-8 rounded-full border border-slate-200 shadow-sm" />
           <span>&copy; 2026 サバ缶＠リベ民</span>
           <div className="w-px h-3 bg-slate-200"></div>
           <span className="text-slate-300">コミュニケーションツール用 リアクション作成ツール</span>
