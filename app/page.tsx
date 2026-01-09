@@ -362,10 +362,10 @@ export default function Home() {
           </div>
         </div>
         <h1 className="text-4xl md:text-5xl font-black tracking-tighter bg-gradient-to-r from-blue-600 to-emerald-500 bg-clip-text text-transparent">
-          Ovice Reaction Maker
+          Ovice リアクションメーカー
         </h1>
         <p className="text-slate-500 max-w-md mx-auto leading-relaxed font-medium">
-          Create friendly animated reaction GIFs for your virtual office!
+          バーチャルオフィスで使えるアニメーションGIFを簡単に作成できます
         </p>
       </header>
 
@@ -416,7 +416,7 @@ export default function Home() {
           {/* Text Control */}
           <div className="flex flex-col gap-3">
             <div className="flex justify-between items-center">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Text Input</label>
+              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">テキスト入力</label>
               <div className="flex items-center gap-1 bg-slate-50 rounded-xl p-1 border border-slate-100">
                 <button
                   onClick={() => setFontSizeOffset(prev => prev - 2)}
@@ -450,7 +450,7 @@ export default function Home() {
             <textarea
               value={text}
               onChange={e => setText(e.target.value)}
-              placeholder="YOUR MESSAGE"
+              placeholder="メッセージを入力"
               maxLength={20}
               rows={2}
               className="w-full bg-slate-50 border border-slate-200 text-slate-800 p-4 rounded-2xl focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition-all font-black text-xl resize-none placeholder:text-slate-300"
@@ -459,40 +459,40 @@ export default function Home() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div className="flex flex-col gap-2">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Animation</label>
+              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">アニメーション</label>
               <select
                 value={animationType}
                 onChange={e => setAnimationType(e.target.value as AnimationType)}
                 className="w-full bg-slate-50 border border-slate-200 text-slate-700 p-4 rounded-2xl focus:outline-none focus:border-blue-400 cursor-pointer font-bold"
               >
-                <option value="pulse">Pulse</option>
-                <option value="spin">Spin</option>
-                <option value="rainbow">Rainbow</option>
-                <option value="shake">Shake</option>
-                <option value="slide">Slide</option>
-                <option value="bounce">Bounce</option>
-                <option value="grow">Grow</option>
-                <option value="blink">Blink</option>
+                <option value="pulse">パルス（鼓動）</option>
+                <option value="spin">回転</option>
+                <option value="rainbow">レインボー</option>
+                <option value="shake">シェイク（揺れ）</option>
+                <option value="slide">スライド</option>
+                <option value="bounce">バウンス（跳ね）</option>
+                <option value="grow">拡大・縮小</option>
+                <option value="blink">点滅</option>
               </select>
             </div>
             <div className="flex flex-col gap-2">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Pattern</label>
+              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">背景パターン</label>
               <select
                 value={bgPattern}
                 onChange={e => setBgPattern(e.target.value as BgPattern)}
                 className="w-full bg-slate-50 border border-slate-200 text-slate-700 p-4 rounded-2xl focus:outline-none focus:border-blue-400 cursor-pointer font-bold"
               >
-                <option value="none">None</option>
-                <option value="heart">Heart</option>
-                <option value="star">Star</option>
-                <option value="burst">Burst</option>
-                <option value="bubble">Bubble</option>
+                <option value="none">なし</option>
+                <option value="heart">ハート</option>
+                <option value="star">スター</option>
+                <option value="burst">バースト（集中線）</option>
+                <option value="bubble">吹き出し</option>
               </select>
             </div>
           </div>
 
           <div className="flex flex-col gap-3">
-            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Canvas Size</label>
+            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">キャンバスサイズ</label>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {SIZE_PRESETS.map((preset) => (
                 <button
@@ -512,7 +512,7 @@ export default function Home() {
 
           <div className="flex flex-col sm:flex-row gap-8">
             <div className="flex-1 flex flex-col gap-3">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Text Style</label>
+              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">テキストスタイル</label>
               <div className="flex items-center gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-100">
                 <div className="relative">
                   <input
@@ -523,14 +523,14 @@ export default function Home() {
                   />
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-xs font-bold text-slate-400 uppercase tracking-[0.1em]">Color</span>
+                  <span className="text-xs font-bold text-slate-400 uppercase tracking-[0.1em]">文字色</span>
                   <span className="font-mono text-sm font-bold text-slate-700">{textColor.toUpperCase()}</span>
                 </div>
               </div>
             </div>
 
             <div className="flex-1 flex flex-col gap-3">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Background</label>
+              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">背景</label>
               <div className="flex flex-col gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-100">
                 <label className="flex items-center gap-3 cursor-pointer select-none group">
                   <div className="relative">
@@ -542,7 +542,7 @@ export default function Home() {
                     />
                     <div className="w-12 h-6 bg-slate-200 rounded-full peer-checked:bg-emerald-500 transition-all after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-6"></div>
                   </div>
-                  <span className="text-sm font-bold text-slate-600 group-hover:text-slate-900 transition-colors">Transparent GIF</span>
+                  <span className="text-sm font-bold text-slate-600 group-hover:text-slate-900 transition-colors">背景を透過させる</span>
                 </label>
                 {!isTransparent && (
                   <div className="flex items-center gap-4 bg-white p-2 rounded-xl border border-slate-100 animate-in fade-in slide-in-from-top-1 duration-200">
@@ -561,7 +561,7 @@ export default function Home() {
 
           <div className="flex flex-col gap-4">
             <div className="flex justify-between items-center">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Duration</label>
+              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">再生時間（秒）</label>
               <span className="text-xs font-bold font-mono bg-blue-50 text-blue-600 px-3 py-1 rounded-full">{duration}s</span>
             </div>
             <input
@@ -587,9 +587,9 @@ export default function Home() {
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                Processing...
+                生成中...
               </span>
-            ) : 'Generate & Download'}
+            ) : 'GIFを生成してダウンロード'}
           </button>
         </div>
       </main>
@@ -598,7 +598,7 @@ export default function Home() {
         <div className="flex items-center gap-4">
           <span>&copy; 2026 サバ缶＠リベ民</span>
           <div className="w-px h-3 bg-slate-200"></div>
-          <span className="text-slate-300">Reaction Generator for Communication Tools</span>
+          <span className="text-slate-300">コミュニケーションツール用 リアクション作成ツール</span>
         </div>
         <div className="font-mono bg-slate-100 text-slate-500 px-3 py-1 rounded-full">
           v0.3.0-light
