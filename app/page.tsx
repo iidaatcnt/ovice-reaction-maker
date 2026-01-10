@@ -29,7 +29,7 @@ export default function Home() {
   const [bgPattern, setBgPattern] = useState<BgPattern>('none');
   const [animationType, setAnimationType] = useState<AnimationType>('pulse');
   // const fps = 20; // Unused for now
-  const [duration, setDuration] = useState(2); // seconds
+  const [duration, setDuration] = useState(5); // Default to slower (5 seconds)
   const [currentSize, setCurrentSize] = useState<SizePreset>(SIZE_PRESETS[0]); // Canvas size
   const [fontSizeOffset, setFontSizeOffset] = useState(0); // Available range: -20 to +20 (approx)
   const [isGenerating, setIsGenerating] = useState(false);
@@ -172,14 +172,23 @@ export default function Home() {
     // Dynamic Font Size fitting
     const drawText = text.toUpperCase();
     const lines = drawText.split('\n');
-    const scaleFactor = Math.min(width, height) / 128;
 
-    // Start with a reasonable base
-    let baseFontSize = 40;
+    // Improved scaling: For narrow banners (like 256x60), use height as base.
+    // For square/rect, use min dimension.
+    const isWideBanner = width / height > 2;
+    const scaleFactor = isWideBanner ? (height / 64) : Math.min(width, height) / 128;
+
+    // Base font size logic
+    let baseFontSize = 50; // Increased base
     const maxLineLength = Math.max(...lines.map(l => l.length));
-    if (maxLineLength > 5) baseFontSize = 30;
-    if (maxLineLength > 10) baseFontSize = 20;
-    if (maxLineLength > 20) baseFontSize = 15;
+
+    // Adaptive sizing
+    if (maxLineLength > 5) baseFontSize = 40;
+    if (maxLineLength > 10) baseFontSize = 30;
+    if (maxLineLength > 20) baseFontSize = 25;
+
+    // Apply manual offset from UI
+    baseFontSize = Math.max(5, baseFontSize + fontSizeOffset);
 
     let fontSize = baseFontSize * scaleFactor;
     ctx.font = `900 ${fontSize}px "Outfit", "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif`;
@@ -566,7 +575,7 @@ export default function Home() {
             <input
               type="range"
               min="0.5"
-              max="5"
+              max="20"
               step="0.5"
               value={duration}
               onChange={e => setDuration(parseFloat(e.target.value))}
