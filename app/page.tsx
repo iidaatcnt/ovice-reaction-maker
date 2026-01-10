@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { GIFEncoder, quantize, applyPalette } from 'gifenc';
 
 // Types
-type AnimationType = 'pulse' | 'spin' | 'rainbow' | 'slide' | 'shake' | 'bounce' | 'grow' | 'blink';
+type AnimationType = 'none' | 'pulse' | 'spin' | 'rainbow' | 'slide' | 'shake' | 'bounce' | 'grow' | 'blink';
 type BgPattern = 'none' | 'heart' | 'star' | 'burst' | 'bubble';
 
 type SizePreset = {
@@ -239,6 +239,8 @@ export default function Home() {
       ctx.scale(scale, scale);
     } else if (animationType === 'blink') {
       ctx.globalAlpha = t < 0.5 ? 1 : 0.2;
+    } else {
+      // 'none' or default: no transform
     }
 
     // Set Color (if not rainbow override)
@@ -473,6 +475,7 @@ export default function Home() {
                 onChange={e => setAnimationType(e.target.value as AnimationType)}
                 className="w-full bg-slate-50 border border-slate-200 text-slate-700 p-4 rounded-2xl focus:outline-none focus:border-blue-400 cursor-pointer font-bold"
               >
+                <option value="none">なし</option>
                 <option value="pulse">パルス（鼓動）</option>
                 <option value="spin">回転</option>
                 <option value="rainbow">レインボー</option>
