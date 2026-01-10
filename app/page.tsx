@@ -170,32 +170,33 @@ export default function Home() {
     ctx.textBaseline = 'middle';
 
     // Dynamic Font Size fitting
-    // Convert to uppercase for rendering consistency
     const drawText = text.toUpperCase();
     const lines = drawText.split('\n');
-
-    // Calculate scale scale based on base size 128
-    // Use the smaller dimension to scale font appropriate for the box
     const scaleFactor = Math.min(width, height) / 128;
 
+    // Start with a reasonable base
     let baseFontSize = 40;
     const maxLineLength = Math.max(...lines.map(l => l.length));
-
     if (maxLineLength > 5) baseFontSize = 30;
-    if (maxLineLength > 8) baseFontSize = 20;
+    if (maxLineLength > 10) baseFontSize = 20;
+    if (maxLineLength > 20) baseFontSize = 15;
 
-    // Adjust for multiple lines
-    if (lines.length > 2) baseFontSize = Math.min(baseFontSize, 30);
-    if (lines.length > 3) baseFontSize = Math.min(baseFontSize, 20);
-
-    // Apply user adjustment
-    baseFontSize = Math.max(5, baseFontSize + fontSizeOffset);
-
-    const fontSize = baseFontSize * scaleFactor;
-    const lineHeight = fontSize * 1.1; // 1.1 is strictly for line spacing visual
-
-    // Add Japanese font fallbacks
+    let fontSize = baseFontSize * scaleFactor;
     ctx.font = `900 ${fontSize}px "Outfit", "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif`;
+
+    // Strict Width Constrain: Scale down if any line exceeds 90% of width
+    const padding = width * 0.1;
+    const maxWidth = width - padding;
+    let longestLineWidth = Math.max(...lines.map(l => ctx.measureText(l).width));
+
+    if (longestLineWidth > maxWidth && animationType !== 'slide') {
+      const reduction = maxWidth / longestLineWidth;
+      fontSize *= reduction;
+      ctx.font = `900 ${fontSize}px "Outfit", "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif`;
+      longestLineWidth = Math.max(...lines.map(l => ctx.measureText(l).width));
+    }
+
+    const lineHeight = fontSize * 1.1;
 
     // Animation Logic
     const centerX = width / 2;
@@ -217,7 +218,9 @@ export default function Home() {
       const hue = t * 360;
       ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
     } else if (animationType === 'slide') {
-      const offsetX = (t - 0.5) * width * 1.5;
+      // Calculate how far to slide so it fully clears the screen on both sides
+      const fullRange = width + longestLineWidth;
+      const offsetX = (fullRange / 2) - (t * fullRange);
       ctx.translate(offsetX, 0);
     } else if (animationType === 'bounce') {
       const bounceY = Math.sin(t * Math.PI * 2) * 10 * scaleFactor;
@@ -447,7 +450,7 @@ export default function Home() {
               value={text}
               onChange={e => setText(e.target.value)}
               placeholder="メッセージを入力"
-              maxLength={20}
+              maxLength={30}
               rows={2}
               className="w-full bg-slate-50 border border-slate-200 text-slate-800 p-4 rounded-2xl focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition-all font-black text-xl resize-none placeholder:text-slate-300"
             />
